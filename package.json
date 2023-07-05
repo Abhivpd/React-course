@@ -2,8 +2,9 @@
   "name": "react-course",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
   "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.ht ml",
     "test": "jest"
   },
   "author": "Abhishek",
@@ -15,5 +16,8 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
-  }
+  },
+  "browserslist": [
+    "last 2 versions"
+  ]
 }
