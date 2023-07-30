@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./shimmer";
+import { Link, json, useNavigate } from "react-router-dom";
 
 
 const Body = () => {
@@ -14,10 +15,14 @@ const Body = () => {
         fecthRestaurantData()
     }, [])
 
+    const navigate = useNavigate();
+
     const fecthRestaurantData = async () => {
         const data = await fetch('https://www.swiggy.com/dapi/restaurants/list/v5?lat=18.5204303&lng=73.8567437&page_type=DESKTOP_WEB_LISTING');
         const jsonData = await data.json();
-        restaurantsLists = jsonData?.data?.cards[2]?.data?.data?.cards;
+        // restaurantsLists = jsonData?.data?.cards[2]?.data?.data?.cards;
+        restaurantsLists = jsonData.data.cards[2].card.card.gridElements.infoWithStyle.restaurants;
+        console.log(jsonData.data.cards[2].card.card.gridElements.infoWithStyle.restaurants)
         setListOfRestaurants(restaurantsLists);
         setFilteredRestaurants(restaurantsLists);
     }
@@ -27,7 +32,7 @@ const Body = () => {
             <div className="filter">
                 <button className="filter-button" onClick={
                     () => {
-                        const filteredRestaurants = listOfRestaurants?.filter(restaurant => restaurant.data.avgRating > 4);
+                        const filteredRestaurants = listOfRestaurants?.filter(restaurant => restaurant.info.avgRating > 4);
                         setFilteredRestaurants(filteredRestaurants);
                     }
                 }>Top Rated Restaurants</button>
@@ -37,7 +42,7 @@ const Body = () => {
                     }} />
                     <button type="submit" onClick={() => {
                         const filteredRestaurants = listOfRestaurants.filter(restaurant => {
-                            const restaurantName = restaurant?.data?.name.toLowerCase();
+                            const restaurantName = restaurant?.info?.name.toLowerCase();
                             return restaurantName.includes(text.toLowerCase());
                         })
                         setFilteredRestaurants(filteredRestaurants)
@@ -45,7 +50,7 @@ const Body = () => {
                 </div>
             </div>
             <div className="restaurant-card-container">
-                {filteredRestaurants?.map(restaurant => <RestaurantCard key={restaurant.data.id} restaurantData={restaurant} />)}
+                {filteredRestaurants?.map(restaurant => <Link to={`restaurant/${restaurant.info.id}`} key={restaurant.info.id}><RestaurantCard restaurantData={restaurant} /></Link>)}
             </div>
         </div>
     );

@@ -2,10 +2,13 @@ import { CDN_URL } from "../utils/constants";
 
 const RestaurantCard = (props) => {
     const { restaurantData } = props;
-    const { name, cuisines, avgRating, cloudinaryImageId } = restaurantData?.data;
+    // const { name, cuisines, avgRating, cloudinaryImageId } = restaurantData?.data;
+    const { name, cuisines, avgRating, cloudinaryImageId } = restaurantData?.info;
 
 
-    return (<div className="restaurant-card">
+    return (<div className="restaurant-card" onClick={() => {
+        
+    }}>
         <h3 className="restaurant-name">{name}</h3>
         <img className="restaurant-image" src={`${CDN_URL}/${cloudinaryImageId}`} alt={name} />
         <h4>{cuisines.join(', ')}</h4>
