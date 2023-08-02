@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./shimmer";
-import { Link, json, useNavigate } from "react-router-dom";
+import { Link, json } from "react-router-dom";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 
 const Body = () => {
@@ -15,29 +16,37 @@ const Body = () => {
         fecthRestaurantData()
     }, [])
 
-    const navigate = useNavigate();
+    const onlineStatus = useOnlineStatus();
+
+    if (!onlineStatus) {
+        return (
+            <h1>You are offline, PLease connect to the Internet!!</h1>
+        )
+    }
 
     const fecthRestaurantData = async () => {
         const data = await fetch('https://www.swiggy.com/dapi/restaurants/list/v5?lat=18.5204303&lng=73.8567437&page_type=DESKTOP_WEB_LISTING');
         const jsonData = await data.json();
         // restaurantsLists = jsonData?.data?.cards[2]?.data?.data?.cards;
-        restaurantsLists = jsonData.data.cards[2].card.card.gridElements.infoWithStyle.restaurants;
-        console.log(jsonData.data.cards[2].card.card.gridElements.infoWithStyle.restaurants)
+        console.log(jsonData.data.cards[5].card.card.gridElements.infoWithStyle.restaurants);
+        restaurantsLists = jsonData.data.cards[5].card.card.gridElements.infoWithStyle.restaurants;
         setListOfRestaurants(restaurantsLists);
         setFilteredRestaurants(restaurantsLists);
     }
 
     return listOfRestaurants.length === 0 ? <Shimmer /> : (
         <div className="body">
-            <div className="filter">
-                <button className="filter-button" onClick={
-                    () => {
-                        const filteredRestaurants = listOfRestaurants?.filter(restaurant => restaurant.info.avgRating > 4);
-                        setFilteredRestaurants(filteredRestaurants);
-                    }
-                }>Top Rated Restaurants</button>
-                <div>
-                    <input type="text" placeholder="search for restaurants" value={text} onChange={(event) => {
+            <div className="flex">
+                <div className="p-4 m-4">
+                    <button className="px-4 py-2 bg-gray-200 rounded-md" onClick={
+                        () => {
+                            const filteredRestaurants = listOfRestaurants?.filter(restaurant => restaurant.info.avgRating > 4);
+                            setFilteredRestaurants(filteredRestaurants);
+                        }
+                    }>Top Rated Restaurants</button>
+                </div>
+                <div className="p-4 m-4">
+                    <input className="border border-black rounded pl-4 py-1" type="text" placeholder="search for restaurants" value={text} onChange={(event) => {
                         setText(event.target.value);
                     }} />
                     <button type="submit" onClick={() => {
@@ -46,10 +55,10 @@ const Body = () => {
                             return restaurantName.includes(text.toLowerCase());
                         })
                         setFilteredRestaurants(filteredRestaurants)
-                    }}>Search</button>
+                    }} className="px-4 py-2 bg-green-50 rounded-md ml-2">Search</button>
                 </div>
             </div>
-            <div className="restaurant-card-container">
+            <div className="restaurant-card-container flex flex-wrap">
                 {filteredRestaurants?.map(restaurant => <Link to={`restaurant/${restaurant.info.id}`} key={restaurant.info.id}><RestaurantCard restaurantData={restaurant} /></Link>)}
             </div>
         </div>

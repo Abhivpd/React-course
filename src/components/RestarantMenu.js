@@ -1,27 +1,15 @@
-import { useEffect, useState } from "react";
 import Shimmer from "./shimmer";
 import { useParams } from "react-router-dom";
-import { MENU_API } from "../utils/constants";
+import useRestaurantMenu from "../utils/useRestaurantMenu";
 
 const RestaurantMenu = () => {
     console.log('comp called')
 
-    const [restaurantInfo, setRestaurantInfo] = useState(null);
-
     const { restaurantId } = useParams();
 
-    useEffect(() => {
-        fetchRestaurantData()
-    }, [])
+    const restaurantInfo = useRestaurantMenu(restaurantId);
 
-    const fetchRestaurantData = async () => {
-        const resData = await fetch(`${MENU_API}${restaurantId}`);
-        const jsonData = await resData.json();
-        const data = jsonData?.data;
-        // const data = jsonData?.data?.cards[0]?.card?.card?.info;
-        // console.log(jsonData?.data.cards[2].groupedCard.cardGroupMap.REGULAR.cards);
-        setRestaurantInfo(data);
-    }
+    console.log('yesss222')
 
     if (restaurantInfo === null) return <Shimmer />;
     else {
@@ -36,7 +24,10 @@ const RestaurantMenu = () => {
                 <h2>Menu</h2>
                 <ul>{
 
-                    itemCards.map(item => { console.log(item.card); return <li key={item.card.info.id}>{item.card.info.name} - ₹{item.card.info.price / 100 || item.card.info.defaultPrice / 100}</li> })
+                    itemCards.map(item => {
+                        // console.log(item.card);
+                        return <li key={item.card.info.id}>{item.card.info.name} - ₹{item.card.info.price / 100 || item.card.info.defaultPrice / 100}</li>
+                    })
                 }
                 </ul>
             </>
