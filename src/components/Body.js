@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import RestaurantCard from "./RestaurantCard";
+import { useContext, useEffect, useState } from "react";
+import RestaurantCard, { PromotedRestaurantCard } from "./RestaurantCard";
 import Shimmer from "./shimmer";
 import { Link, json } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
+import UserContext from "../utils/UserContext";
 
 
 const Body = () => {
@@ -14,9 +15,11 @@ const Body = () => {
     useEffect(() => {
         console.log('useEffect() called');
         fecthRestaurantData()
-    }, [])
+    }, []);
 
     const onlineStatus = useOnlineStatus();
+
+    const contextData = useContext(UserContext)
 
     if (!onlineStatus) {
         return (
@@ -33,6 +36,8 @@ const Body = () => {
         setListOfRestaurants(restaurantsLists);
         setFilteredRestaurants(restaurantsLists);
     }
+
+    const RestaurantCardWithGoodRatings = PromotedRestaurantCard(RestaurantCard)
 
     return listOfRestaurants.length === 0 ? <Shimmer /> : (
         <div className="body">
@@ -56,10 +61,14 @@ const Body = () => {
                         })
                         setFilteredRestaurants(filteredRestaurants)
                     }} className="px-4 py-2 bg-green-50 rounded-md ml-2">Search</button>
+                    <label className="mx-8">Set Name :</label>
+                    <input className="border border-black mx-2 px-4" value={ contextData.loggedInUser} onChange={(event) => contextData.setUserName(event.target.value)}/>
                 </div>
             </div>
             <div className="restaurant-card-container flex flex-wrap">
-                {filteredRestaurants?.map(restaurant => <Link to={`restaurant/${restaurant.info.id}`} key={restaurant.info.id}><RestaurantCard restaurantData={restaurant} /></Link>)}
+                {filteredRestaurants?.map(restaurant => <Link to={`restaurant/${restaurant.info.id}`} key={restaurant.info.id}>
+                    {restaurant.info.avgRating >= 4 ? <RestaurantCardWithGoodRatings restaurantData={restaurant} /> : <RestaurantCard restaurantData={restaurant} />}
+                </Link>)}
             </div>
         </div>
     );

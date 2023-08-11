@@ -6,8 +6,6 @@ const useRestaurantMenu = (restaurantId) => {
 
     const [restaurantInfo, setRestaurantInfo] = useState(null);
 
-    console.log('yesss')
-
     useEffect(() => {
         console.log('useeffect')
         fetchRestaurantData()
