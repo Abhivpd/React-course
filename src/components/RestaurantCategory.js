@@ -18,7 +18,7 @@ const RestaurantCategory = ({ menuData, showMenuList, setIndexFunction, index, s
                         <span className="font-bold text-lg">{title} ({itemCards?.length})</span>
                         <span>🔽</span>
                     </div>
-                    {showMenuList && <MenuList items={itemCards} />}
+                    {showMenuList && <MenuList key={title} items={itemCards} />}
                 </div>
             </>
         )
@@ -32,7 +32,7 @@ const RestaurantCategory = ({ menuData, showMenuList, setIndexFunction, index, s
                             <span className="font-bold text-lg">{category.title} ({category.itemCards?.length})</span>
                             <span>🔽</span>
                         </div>
-                        {showMenuList && <MenuList items={category.itemCards} />}
+                        {showMenuList && <MenuList key={category.title} items={category.itemCards} />}
                     </div>
                 )
             })}

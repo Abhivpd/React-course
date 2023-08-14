@@ -19,7 +19,7 @@ const Body = () => {
 
     const onlineStatus = useOnlineStatus();
 
-    const contextData = useContext(UserContext)
+    const contextData = useContext(UserContext);
 
     if (!onlineStatus) {
         return (
